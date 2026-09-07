@@ -17,6 +17,7 @@ export const HELP = `harness-kit v${VERSION} —— 可回滚的角色化 Agent 
   patch   纯 lock 驱动：补缺失 + 报告漂移。默认 dry-run；--apply 才补缺（A8/A3）。
   doctor  现状体检：受管/漂移/体积三值，只读（--json 供 agent 分析）。
   size    size 三值：锚点 CLAUDE.md / 常驻 rules / 产物 KB + 档位预算通过性。
+  agent-prompt  生成"复制给任意 Agent"的一段话（无副作用；贴给豆包/Qoder/ChatGPT/Claude/WorkBuddy/TraeWork 即让它自驱动 kit）。
   help, version
 
 选项:
@@ -37,6 +38,7 @@ export const HELP = `harness-kit v${VERSION} —— 可回滚的角色化 Agent 
   harness-kit patch --apply --json
   harness-kit doctor --json
   harness-kit size --json
+  harness-kit agent-prompt --role presale
 `;
 
 export function parseArgs(argv) {
@@ -144,6 +146,9 @@ export async function main(argv) {
         const r = inspectSize(path.resolve(opts.cwd || process.cwd()));
         return out(r, 0);
       }
+      case 'agent-prompt': {
+        return out({ op: 'agent-prompt', role: opts.role || null, prompt: buildAgentPrompt(opts.role) }, 0);
+      }
       default:
         return out({ op: null, ok: false, error: 'unknown-op', message: `未知操作: ${opts.op || '(空)'}` }, 2);
     }
@@ -152,12 +157,21 @@ export async function main(argv) {
   }
 }
 
+/** 生成"复制给任意 Agent"的一段话（FR-15 零门槛入门）。 */
+function buildAgentPrompt(role) {
+  const labels = { presale: '售前 / FDE', 'code-delivery': '开发交付 / IT', content: '内容运营' };
+  const label = labels[role] || '（选角色：presale / code-delivery / content）';
+  const roleArg = role || '{presale | code-delivery | content}';
+  return `请用 harness-kit 把当前目录搭成一个「${label}」角色的受控 AI 工作台。harness-kit 是可回滚的角色化 Harness 工作区生成器（github: xingtu1996/harness-kit）。请：① 读它的 README 并安装（npm i -g harness-kit，零第三方依赖）；② 运行 harness-kit init --role ${roleArg} --json 先预览将写哪些文件，确认安全再落盘（无 --role 会先给 role-中性基座）；③ 完成后跑 harness-kit doctor --json，告诉我受管文件数、体积是否过预算、有无漂移。它零遥测，不把你的数据外发。`;
+}
+
 function renderHuman(r, opts) {
   switch (r.op) {
     case 'init': return humanInit(r);
     case 'patch': return humanPatch(r);
     case 'doctor': return humanDoctor(r);
     case 'size': return humanSize(r);
+    case 'agent-prompt': return r.prompt;
     case null: return r.message || r.error;
     default:
       if (r.help) return r.help;

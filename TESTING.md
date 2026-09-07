@@ -11,6 +11,7 @@
 | FR-1 幂等 | init.spec.js | 二次 init | changed=false，lock 不变 |
 | FR-2 patch 纯 lock 驱动 | patch.spec.js | missing/drift 报告 + `--apply` 补缺不覆写手改；无 lock → no-lock 拒绝空跑 | 结构化摘要可解析；手改保留 |
 | FR-6 manifest schema | init.spec.js | manifest.schema.v0.json 校验内置 preset | 零 schema 错误 |
+| FR-15 agent-prompt | agent-prompt.spec.js | 生成可复制提示（role 标签/占位/--json）| 输出含 kit init 指引 + 零遥测声明 |
 | A5 高敏 --trust | trust.spec.js | hook 模块未 --trust 不进写；--trust 放行 | skippedSensitive / 写入 |
 | A7 dest 越界 | trust.spec.js | dest `../`/绝对路径 | 拒绝 + 不外泄受管根 |
 | NF-1 体积 | size-budget.spec.js | size 三值口径 + B0/presale ≤档位 | pass=true；CLAUDE.md<300 行 |
@@ -29,6 +30,8 @@
 - ✔ init --role presale 含 No-Spec-No-Code 门禁件（A9）
 - ✔ dest 越界（../ / 绝对）拒绝不外泄（A7）
 - ✔ 高敏 hook 未 --trust 不进写；--trust 放行（A5）
+- ✔ agent-prompt 生成可复制提示（FR-15，role 标签/占位/--json）
+→ **14/14 PASS**（agent-prompt 加入后）
 
 ***REMOVED******REMOVED*** 未覆盖（M3+ 增量时补）
 
