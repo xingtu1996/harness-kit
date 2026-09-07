@@ -82,7 +82,7 @@ harness-kit 生成物 = 这份接口的**角色化简化版**（B0 基座：`.cl
 - **跨项目一致**：批量升级 + `doctor` 跨项目体检，规模化执行而不散架
 - 理念源自 haiting 公司标准规约包（"没有它=AI 忘规范/经验不沉淀"），kit 把它从"人肉复制 zip"变成"可回滚的生成与治理"
 
-跨阶段转换（售前 → coding）走 upgrade（剥离售前件 → 放行 coding 族 → 加门禁），doctor 会提示转换关系。
+跨阶段转换（售前 → coding）走 `kit convert --role code-delivery`：跨 preset 纯 lock 切换（新增/变更渲染 + 快照），旧角色专属件移出受管但**盘上保留不自动删**，放行 coding 族加门禁；doctor 会按 `config.defaultRole` 提示转换关系。
 
 ***REMOVED******REMOVED*** 快速开始
 
@@ -142,9 +142,10 @@ harness-kit patch --apply --json
 
 ***REMOVED******REMOVED******REMOVED*** CLI 契约
 
-- 全命令 `--json`；`--dry-run` 预览（patch 默认 dry-run）；`--apply` 落盘；`--trust` 高敏放行（A5）；`--cwd <dir>`；`--role <presale|code-delivery|content>`；`--stage`（upgrade 跨阶段转换占位）。
-- 命令：`init`（默认可写）· `patch`（纯 lock 补缺+漂移）· `upgrade`（纯 lock 升级：preset 新版列新增/变更，--apply 写盘+刷新 lock）· `doctor`（受管/漂移/体积体检）· `size`（三值+预算）· `agent-prompt`（生成贴给 Agent 的一句话）。
-- `.harness-kit/`（lock + 快照）自动进目标 `.gitignore`，自豁免体积审计。
+- 全命令 `--json`；`--dry-run` 预览（patch 默认 dry-run）；`--apply` 落盘；`--trust` 高敏放行（A5）；`--cwd <dir>`；`--role <presale|code-delivery|content|B0>`（init/patch/convert）；`--stage`（upgrade 跨阶段占位，完整转换走 convert）。
+- 命令：`init`（默认可写）· `patch`（纯 lock 补缺+漂移）· `upgrade`（纯 lock 升级：preset 新版列新增/变更，--apply 写盘+刷新 lock）· `doctor`（受管/漂移/体积体检 + 合并分层配置）· `size`（三值+预算）· `show managed`（只读列受管文件 + ok/missing/drift）· `convert`（跨角色切换 preset，--apply 才落盘，旧件移出受管不删盘）· `agent-prompt`（生成贴给 Agent 的一句话）。
+- `.harness-kit/`（lock + 快照 + 分层配置 config.json）自动进目标 `.gitignore`，自豁免体积审计。
+- 分层配置（FR-16，只读注入 doctor，M3+ 才驱动行为）：内置默认 < `~/.harness-kit/config.json` < 项目 `.harness-kit/config.json`（init 自动生成骨架，字段 `defaultRole`/`defaultPlatform`/`budget`/`features`；`null` 惰性回退低层）< CLI 参数。
 
 ***REMOVED******REMOVED******REMOVED*** 术语三行
 
@@ -202,7 +203,7 @@ harness-kit = 散仓资产的**角色化编排生成器**：`xingtu-harness` 是
 
 ```bash
 npm run build   ***REMOVED*** 语法自检（零编译）
-npm test        ***REMOVED*** node:test 冒烟（init/patch/doctor/size + trust 门 + 体积预算）
+npm test        ***REMOVED*** node:test 冒烟（init/patch/upgrade/doctor/size/show/convert + trust 门 + 体积预算 + golden）
 ```
 
-目录：`bin/`（薄入口）· `src/`（cli/detect/init/patch/doctor/render/lock/manifest/snapshot/size）· `presets/`（B0 + presale）· `manifest.schema.v0.json`（schema）· `test/`。
+目录：`bin/`（薄入口）· `src/`（cli/detect/init/patch/upgrade/doctor/size/show/convert/config/render/lock/manifest/snapshot）· `presets/`（B0 + presale + code-delivery + content）· `manifest.schema.v0.json`（schema）· `test/`（含 fixtures/golden.* 快照）· `.github/workflows/ci.yml`（门禁）。

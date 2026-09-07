@@ -15,6 +15,9 @@
 | A5 高敏 --trust | trust.spec.js | hook 模块未 --trust 不进写；--trust 放行 | skippedSensitive / 写入 |
 | A7 dest 越界 | trust.spec.js | dest `../`/绝对路径 | 拒绝 + 不外泄受管根 |
 | NF-1 体积 | size-budget.spec.js | size 三值口径 + B0/presale ≤档位 | pass=true；CLAUDE.md<300 行 |
+| A3 show managed | show.spec.js | init 后列受管 ok / 删一文件→missing / 无 lock→no-lock | 相对路径 + ok/missing/drift 逐条 |
+| FR-4 convert（跨角色） | convert.spec.js | dry-run 清单 / --apply 切角色 + lock 刷新 + doctor 通过 / 漂移原子阻断 / no-lock / same-role / missing-role | 切后 preset.id 变 + 旧件移出受管盘上保留 |
+| FR-16 分层配置 | config.spec.js | doctor --json 含 config / 项目覆盖 defaultRole/features / 无 config 内置默认 / null 惰性 | 四级合并只读注入，不改写行为 |
 | --json 机器可读 | init/patch/size | init/doctor/patch/size `--json` | JSON.parse 通过 |
 
 ***REMOVED******REMOVED*** 报告
@@ -31,13 +34,18 @@
 - ✔ dest 越界（../ / 绝对）拒绝不外泄（A7）
 - ✔ 高敏 hook 未 --trust 不进写；--trust 放行（A5）
 - ✔ agent-prompt 生成可复制提示（FR-15，role 标签/占位/--json）
-→ **14/14 PASS**（agent-prompt 加入后）
+- ✔ upgrade（FR-4 骨架）：no-lock→先 init；sha 同→已最新；sha 异→needs-apply dry-run；--apply 写盘+lock 刷新+幂等；--stage 占位
+- ✔ golden 快照回归（4 preset init 产物树 sha256 vs fixtures，UPDATE_GOLDEN=1 再生）
+- ✔ `show managed`（A3）：init 后列受管 ok；删一文件 → missing；无 lock → no-lock
+- ✔ `convert`（FR-4 跨角色最小可用）：dry-run 列 新增/变更/移出受管；--apply 切角色 + lock 刷新 + doctor 通过；漂移原子阻断不写盘；no-lock/same-role/missing-role
+- ✔ 分层配置（FR-16）：doctor --json 含 config 合并字段；项目 config 覆盖 defaultRole/features（reflow 占位建议）；无 config 回退内置默认；null 惰性不覆盖用户级
+→ **37/37 PASS**
 
 ***REMOVED******REMOVED*** 未覆盖（M3+ 增量时补）
 
-- upgrade / convert（跨阶段转换，haiting 样例）、`show managed`、`agent-prompt`、`apply`(团队 preset FR-14)、`--allow-extension`(A6)
-- golden 快照测试（render diff 回归）；hook 真实落盘 chmod（A6）；Windows 路径
+- `convert` 完整语义（haiting 样例进阶：spec 交接编排/回滚路径）、`apply`(团队 preset FR-14)、`--allow-extension`(A6)、分层配置完整开关（defaultRole/budget/features 真驱动 init/doctor 行为，非只读）
+- hook 真实落盘 chmod（A6）；Windows 路径
 
 ***REMOVED******REMOVED*** CI 意图
 
-`npm test` + `npm run build` 为发布门禁前置；npm publish --provenance（04 A4）。CI 工作流文件 M3 加。
+`npm test` + `npm run build` 为发布门禁前置；`.github/workflows/ci.yml` 已落（push/PR 跑 test+build；tag push 触发 `npm publish --provenance --access public`，需 secrets.NPM_TOKEN）。
