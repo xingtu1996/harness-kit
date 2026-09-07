@@ -5,11 +5,13 @@ import { patch } from './patch.js';
 import { upgrade } from './upgrade.js';
 import { doctor } from './doctor.js';
 import { inspectSize } from './size.js';
+import { showManaged } from './show.js';
+import { convert } from './convert.js';
 import { REPO_ROOT } from './util.js';
 
 const VERSION = JSON.parse(readFileSync(path.join(REPO_ROOT, 'package.json'), 'utf8')).version;
 
-export const HELP = `harness-kit v${VERSION} —— 可回滚的角色化 Agent Harness 工作区生成器（init/patch/upgrade/doctor/size/agent-prompt）
+export const HELP = `harness-kit v${VERSION} —— 可回滚的角色化 Agent Harness 工作区生成器（init/patch/upgrade/doctor/size/agent-prompt/show/convert）
 
 用法: harness-kit <op> [options]
 
@@ -17,19 +19,21 @@ export const HELP = `harness-kit v${VERSION} —— 可回滚的角色化 Agent 
   init    生成受管 harness 骨架。默认可写；无 --role → role-中性 B0 基座（A1）。
   patch   纯 lock 驱动：补缺失 + 报告漂移。默认 dry-run；--apply 才补缺（A8/A3）。
   upgrade 纯 lock 驱动升级（M3）：lock.presetSha ≠ 当前 bundled sha → 列新增/变更清单。默认 dry-run；--apply 渲染写盘+刷新 lock。无 lock 需先 init。
-  doctor  现状体检：受管/漂移/体积三值，只读（--json 供 agent 分析）。
+  doctor  现状体检：受管/漂移/体积三值 + 合并分层配置（FR-16），只读（--json 供 agent 分析）。
   size    size 三值：锚点 CLAUDE.md / 常驻 rules / 产物 KB + 档位预算通过性。
+  show managed  只读列出受管文件（相对路径 + ok/missing/drift，对比磁盘 hash），无副作用（A3）。
+  convert 跨角色/跨阶段 preset 转换（最小可用）：切目标角色（--role），纯 lock+diff+快照；旧角色件移出受管但盘上保留，永不自动删盘。
   agent-prompt  生成"复制给任意 Agent"的一段话（无副作用；贴给豆包/Qoder/ChatGPT/Claude/WorkBuddy/TraeWork 即让它自驱动 kit）。
   help, version
 
 选项:
   --json           结构化 JSON 输出（全命令可解析）
   --cwd <dir>      目标工作区目录（默认 process.cwd()）
-  --role <id>      preset 角色：B0 / presale / code-delivery / content（init/patch）
+  --role <id>      preset 角色：B0 / presale / code-delivery / content（init/patch/convert）
   --platform <id>  claude（默认自动探测）
-  --stage <转换>   跨阶段转换占位（upgrade，如 presale→coding；convert 未实现，v0.1 仅指引）
+  --stage <转换>   跨阶段转换占位（upgrade，如 presale→coding；完整转换走 convert）
   --dry-run        预览，不落盘
-  --apply          落盘写（patch 补缺 / upgrade 应用需此标志；init 默认可写）
+  --apply          落盘写（patch 补缺 / upgrade 应用 / convert 切角色需此标志；init 默认可写）
   --trust          高敏模块（hook/script/settings/permissions/mcp）人审放行（A5）
   --purge          清空 .harness-kit/snapshots 快照
   --allow-extension 预留：第三方 marketplace opt-in（A6，v0.1 未启用）
@@ -42,6 +46,9 @@ export const HELP = `harness-kit v${VERSION} —— 可回滚的角色化 Agent 
   harness-kit upgrade --json
   harness-kit upgrade --apply --json
   harness-kit upgrade --stage presale→coding --json
+  harness-kit show managed --json
+  harness-kit convert --role code-delivery --json
+  harness-kit convert --role code-delivery --apply --json
   harness-kit doctor --json
   harness-kit size --json
   harness-kit agent-prompt --role presale
@@ -68,6 +75,7 @@ export function parseArgs(argv) {
     else positional.push(a);
   }
   opts.op = positional[0] || null;
+  opts.sub = positional[1] || null;
   return opts;
 }
 
@@ -115,13 +123,46 @@ function humanUpgrade(r) {
 
 function humanDoctor(r) {
   if (r.ok === false) return `[doctor] ${r.message}`;
+  const cfgLine = r.config?.defaultRole ? ` · config.defaultRole=${r.config.defaultRole}` : '';
   return [
-    `doctor: managed=${r.managed.ok}/${r.managed.total} missing=${r.managed.missing} drift=${r.managed.drift}`,
+    `doctor: managed=${r.managed.ok}/${r.managed.total} missing=${r.managed.missing} drift=${r.managed.drift}${cfgLine}`,
     `  CLAUDE.md: ${r.size.claudeMd.bytes}B / ${r.size.claudeMd.lines} 行`,
     `  常驻 rules: ${r.size.residentRules.count} 个 / ${r.size.residentRules.bytes}B`,
     `  产物: ${r.size.productsKb}KB ≤ ${r.size.budgetKb}KB ${r.size.pass ? 'PASS' : 'FAIL'}`,
     ...(r.suggestions || []).map((s) => `  建议: ${s}`),
   ].join('\n');
+}
+
+function humanShow(r) {
+  if (r.ok === false) return `[show ${r.sub}] ${r.message}`;
+  const lines = [
+    `show managed: preset=${r.preset.id} · ${r.managed.ok}/${r.managed.total} ok · missing=${r.managed.missing} drift=${r.managed.drift}`,
+  ];
+  for (const f of r.files) {
+    lines.push(`  ${f.state === 'ok' ? '·' : f.state === 'missing' ? '✗' : '~'} ${f.path} (${f.state})`);
+  }
+  return lines.join('\n');
+}
+
+function humanConvert(r) {
+  if (r.ok === false) return `[convert] ${r.message}`;
+  if (r.status === 'blocked') {
+    return [`convert: blocked（原子：任一阻断整体不动）`,
+      ...(r.blocked || []).map((b) => `  ⛔ 阻断 ${b.path} (${b.reason})`),
+      ...(r.skipped || []).map((s) => `  ⚠ 高敏跳过 ${s.path} → --trust`),
+      ...(r.guidance || []).map((g) => `  指引: ${g}`),
+    ].join('\n');
+  }
+  const lines = [
+    `convert: ${r.from.id} → ${r.to.id} · ${r.status} · 新增 ${r.summary.added} / 变更 ${r.summary.changed} / 移出受管 ${r.summary.removed}`,
+  ];
+  for (const c of r.changed) lines.push(`  ~ ${c.path} (changed)`);
+  for (const c of r.added) lines.push(`  + ${c.path} (new)`);
+  for (const c of r.removed) lines.push(`  - ${c.path} (移出受管，盘上保留，可手动移除)`);
+  for (const a of r.applied) lines.push(`  + applied ${a.path}`);
+  for (const g of r.guidance || []) lines.push(`  指引: ${g}`);
+  if (r.status === 'needs-apply') lines.push('  → `--apply` 渲染写盘并刷新 lock');
+  return lines.join('\n');
 }
 
 function humanSize(r) {
@@ -175,6 +216,17 @@ export async function main(argv) {
         const r = inspectSize(path.resolve(opts.cwd || process.cwd()));
         return out(r, 0);
       }
+      case 'show': {
+        if (opts.sub !== 'managed') {
+          return out({ op: 'show', sub: opts.sub || null, ok: false, error: 'unknown-sub', message: `show 子命令仅支持 managed，收到: ${opts.sub || '(空)'}` }, 2);
+        }
+        const r = showManaged({ cwd: opts.cwd });
+        return out(r, r.ok === false ? 1 : 0);
+      }
+      case 'convert': {
+        const r = await convert({ cwd: opts.cwd, role: opts.role, apply: opts.apply === true && !opts.dryRun, dryRun: !!opts.dryRun, trust: opts.trust, purge: opts.purge });
+        return out(r, r.ok === false ? 1 : 0);
+      }
       case 'agent-prompt': {
         return out({ op: 'agent-prompt', role: opts.role || null, prompt: buildAgentPrompt(opts.role) }, 0);
       }
@@ -201,6 +253,8 @@ function renderHuman(r, opts) {
     case 'upgrade': return humanUpgrade(r);
     case 'doctor': return humanDoctor(r);
     case 'size': return humanSize(r);
+    case 'show': return humanShow(r);
+    case 'convert': return humanConvert(r);
     case 'agent-prompt': return r.prompt;
     case null: return r.message || r.error;
     default:
