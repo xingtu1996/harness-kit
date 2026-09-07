@@ -7,7 +7,7 @@
 2. **强 harness → 不必强模型** —— 把质量从"模型智力"迁移到"约束 + 工程 + 知识接入"，跑更便宜/更小/私有化模型而不塌质量。
 3. **Agent 驱动 + 人可操作** —— 全命令 `--json`，agent（或人）可读现状/差异/漂移给建议，从"人脑记忆驱动"到"现状分析驱动"。
 
-v0.1 = `init` / `patch` / `doctor` 三命令最小可跑，角色 preset 库内容导向（B0 中性基座 + presale 首发）。
+命令：`init` / `patch` / `upgrade` / `doctor` / `size` / `show managed` / `convert` / `agent-prompt`；角色 preset 库内容导向（B0 + presale / code-delivery / content）。test 37/37。
 
 ---
 
