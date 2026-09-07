@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>harness-kit · 可回滚的角色化 Harness 工作区生成器</title>
+<style>
+:root{--bg:***REMOVED***0f141a;--card:***REMOVED***161d27;--card2:***REMOVED***1b2531;--line:***REMOVED***26313f;--tx:***REMOVED***dbe4ee;--mut:***REMOVED***8aa0b5;--a:***REMOVED***4cc2ff;--b:***REMOVED***ffb454;--ok:***REMOVED***39d98a;--warn:***REMOVED***ff6b6b}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font:15px/1.7 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif;padding:32px}
+.wrap{max-width:960px;margin:0 auto}
+h1{font-size:30px;letter-spacing:.5px}
+h2{font-size:18px;margin:32px 0 12px;color:var(--a);border-left:3px solid var(--a);padding-left:10px}
+.sub{color:var(--mut);font-size:14px}
+.hero{border:1px solid var(--line);border-radius:14px;padding:22px 24px;background:linear-gradient(135deg,***REMOVED***14202e,***REMOVED***161d27);margin:18px 0}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.card h3{font-size:15px;margin-bottom:8px}
+.card li{font-size:13.5px;color:var(--mut);margin:5px 0 5px 16px}
+.tag{display:inline-block;font-size:11.5px;padding:1px 9px;border-radius:20px;margin:2px 5px 2px 0}
+.t-b{background:***REMOVED***223044;color:var(--a)}.t-o{background:***REMOVED***3a2c12;color:var(--b)}.t-g{background:***REMOVED***10351f;color:var(--ok)}
+code{background:***REMOVED***1c2733;padding:1px 6px;border-radius:5px;font-size:13px;color:***REMOVED***aee}
+pre{background:***REMOVED***0d1219;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow:auto;font-size:13px;line-height:1.6;color:***REMOVED***c8d8ea;margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px;background:var(--card);border-radius:10px;overflow:hidden}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--card2);color:var(--mut)}
+.g{color:var(--ok)}.y{color:var(--b)}.r{color:var(--warn)}.m{color:var(--mut)}
+.foot{margin-top:36px;color:var(--mut);font-size:12px;border-top:1px solid var(--line);padding-top:12px}
+blockquote{border-left:3px solid var(--b);padding:8px 14px;margin:10px 0;color:var(--mut);background:***REMOVED***1a1410;border-radius:0 8px 8px 0}
+a{color:var(--a);text-decoration:none}
+</style>
+</head>
+<body><div class="wrap">
+
+<div class="hero">
+<h1>🧰 harness-kit</h1>
+<p class="sub">可回滚的角色化 Agent Harness 工作区生成器 · Apache-2.0 · 零遥测 · 零第三方依赖 · test 23/23</p>
+<p style="margin-top:14px">给强 harness，模型可以便宜 —— 把 AI 关进受控轨道的那套"项目 Harness"，按角色一键生成。</p>
+<div style="margin-top:10px"><span class="tag t-g">init</span><span class="tag t-g">patch</span><span class="tag t-g">upgrade</span><span class="tag t-o">doctor</span><span class="tag t-o">size</span><span class="tag t-o">agent-prompt</span></div>
+</div>
+
+<h2>为什么需要它</h2>
+<div class="cards">
+<div class="card"><h3>可控是分水岭</h3><p style="font-size:13px;color:var(--mut)">harness 不是工具收藏，是 AI 规模化使用的前提。模型会变、Agent 形态会变，"可控"不变 —— 分数逼近天花板，分水岭是"可不可控"。</p></div>
+<div class="card"><h3>强 harness → 不必强模型</h3><p style="font-size:13px;color:var(--mut)">把质量从"模型智力"迁移到"约束 + 工程 + 知识接入"，就能跑更便宜/更小/私有化模型而不塌质量（DS V4 Flash / GLM 5.3 Flash…）。</p></div>
+<div class="card"><h3>Agent 驱动 + 人可操作</h3><p style="font-size:13px;color:var(--mut)">全命令 <code>--json</code> 机器可读，agent 能读现状/差异/漂移给建议 —— 不只靠人脑记忆操作。</p></div>
+</div>
+
+<h2>给老奶奶讲</h2>
+<p style="color:var(--mut);font-size:14px">给 AI 配的"工作台 + 使用手册 + 规矩"。模型再聪明，不懂你的规矩就乱来。harness 就像给新手员工的一本《岗位手册 + 操作规范 + 老员工笔记》。新项目十几秒搭好，老项目补规矩还能接上你的知识库 —— 省 token、少返工、质量稳、经验复利。</p>
+
+<h2>harness 接口长这样（真实实例）</h2>
+<pre>.claude/                     ← Harness 根目录（AI 共享的"工作台"）
+├── CLAUDE.md               ← 行为锚点：我是谁(角色)/怎么路由/铁律（AI 每次读的"名片+规矩"）
+├── AGENTS.md               ← 给 AI 的导航索引（告诉它"你要的东西在哪个文件"）
+├── DIRECTORY.md            ← 注册表：harness 里有什么、在哪（防资产漂移）
+├── rules/                  ← 规则接口：治理护栏（宪法最优先；业务规则按需触发）
+├── skills/                 ← 技能接口：SOP 打包（触发才加载，按需省 token）
+├── workflows/              ← 流程接口：怎么一步步走
+├── templates/              ← 模板元层：理念 / 方法 / 工程实践命名家族
+├── memory/ + incidents/    ← 沉淀接口：知识 / 踩坑回流（复利飞轮落点）
+└── hooks/                  ← 机械强制接口：规则是愿望、hook 是墙</pre>
+
+<h2>一条命令</h2>
+<pre>npm i -g harness-kit                 ***REMOVED*** 零第三方依赖
+harness-kit init --role presale --json        ***REMOVED*** 售前：No-Spec-No-Code 门禁
+harness-kit init --role code-delivery --json  ***REMOVED*** 开发交付：coding-gate
+harness-kit init --role content --json        ***REMOVED*** 内容运营：content-gate + 知识接入点
+harness-kit doctor --json                     ***REMOVED*** 受管 / 漂移 / 体积体检（agent 可读）
+harness-kit agent-prompt --role presale       ***REMOVED*** 生成"复制给任意 Agent"的一段话</pre>
+<p class="sub" style="margin-top:6px">已有受管空间？`patch` 补缺 + 报漂移；preset 有新版走 `upgrade`（纯 lock 驱动 + 快照回滚，绝不覆盖你的手改）。</p>
+
+<h2>角色 preset · 克制 + 可定制</h2>
+<table><tr><th>preset</th><th>签名机制件（A9 立品实证）</th><th>其余</th></tr>
+<tr><td><b>B0</b> 中性基座</td><td>渐进披露 + 术语 + 模板元层</td><td>一切 preset 的基座</td></tr>
+<tr><td><b>presale</b> 售前/FDE</td><td>No-Spec-No-Code 门禁</td><td>ready-for-agent 交接</td></tr>
+<tr><td><b>code-delivery</b> 开发交付</td><td>coding-gate（Spec 先行 / 安全三条件 / 测试先行）</td><td>{{stack}} 技术栈变量</td></tr>
+<tr><td><b>content</b> 内容运营</td><td>content-gate（先查证 / 去 AI 味 / 标源）</td><td>知识接入点（素材库/知识库）</td></tr></table>
+<p class="sub">每个角色 = B0 + 锚点 + ≤2 门禁件 —— 不堆全量 rules（省上下文税）。定制：改生成物占位永不覆写 → 自建 preset → 团队 preset 分发。</p>
+
+<h2>零门槛入门：一段话让任意 Agent 动手</h2>
+<blockquote>请用 harness-kit 把当前目录搭成一个「{售前 / 开发交付 / 内容运营}」角色的受控 AI 工作台。读 README 安装 → <code>harness-kit init --role {角色} --json</code> 先预览确认 → <code>harness-kit doctor --json</code> 报告受管/体积/漂移。</blockquote>
+<p class="sub">复制给 Claude Code / 豆包 / Qoder / ChatGPT / WorkBuddy / TraeWork… 任何 Agent，它自己动手。</p>
+
+<h2>团队统一 · 规模化</h2>
+<p style="color:var(--mut);font-size:14px">从团队标准 preset 统一（路线图 v1+）：公司标准 + 角色层 + 个人手改层（kit 永不覆写）→ 收敛同基座、批量升级、跨项目 doctor。理念源自一线团队标准规约包 —— kit 把它从"人肉复制 zip + 搜 {{变量}}"变成可回滚的生成与治理。</p>
+
+<h2>安全 · 纯净 · 可信</h2>
+<ul style="color:var(--mut);font-size:14px">
+<li><span class="g">零遥测零埋点</span>：不把你的数据外发；内网可 `--no-telemetry` 硬禁</li>
+<li><span class="g">高敏分级</span>：hook/脚本/设置类写入需 `--trust` 人审</li>
+<li><span class="g">纯 lock 驱动</span>：每受管文件内容 hash；你的手改 kit 永不覆盖，只报漂移</li>
+<li><span class="g">快照回滚</span>：写前留底 N 版，写坏能还原；dest 越界被拦截</li>
+<li>第三方扩展 opt-in + archive 拉取 + sha 锁定（不自动信远端新版本）</li>
+</ul>
+
+<h2>生态 · 关系自解释</h2>
+<p style="color:var(--mut);font-size:14px">harness-kit = 散仓资产的<b>角色化编排生成器</b>；xingtu-harness 是"一键装配全部"，harness-kit 是"按角色 × 平台生成专业规约 workspace"—— 互补同源，引用不复制。</p>
+
+<h2>路线图</h2>
+<table><tr><th>阶段</th><th>内容</th><th>状态</th></tr>
+<tr><td>v0.1</td><td>init / patch / doctor / size / agent-prompt · 4 preset · upgrade 骨架 · golden 回归 · 快照</td><td><span class="g">✅ test 23/23</span></td></tr>
+<tr><td>M3 续</td><td>convert（跨阶段转换）· show managed · 分层配置 · CI · apply（团队）· 第三方扩展</td><td><span class="y">🔶 进行</span></td></tr>
+<tr><td>v1+ companion</td><td>slim 漂移体检 · reflow 会话回流（人 gate）· 自动同步检测</td><td><span class="m">路线</span></td></tr></table>
+
+<div class="foot">项目自述 · 2026-09-07 · 配套 <a href="./README.md">README.md</a>（GitHub 友好）｜ 规划 SSoT：行途 specs/harness-kit--role-harness-initializer--20260907/</div>
+</div></body></html>
