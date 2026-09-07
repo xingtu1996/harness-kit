@@ -1,0 +1,54 @@
+***REMOVED*** harness-kit CI：发布门禁（04 A4）
+***REMOVED*** 门禁 = npm test（node:test 全绿）+ npm run build（node --check 语法自检）。
+***REMOVED*** 零第三方依赖 → 无 lock 文件，用 npm install（非 npm ci）。
+***REMOVED*** publish 只在 tag push 时触发，走 npm publish --provenance --access public，需 secrets.NPM_TOKEN。
+
+name: ci
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*'] ***REMOVED*** 版本 tag（v0.1.0 / v0.2.0 …）触发 publish
+  pull_request:
+
+jobs:
+  ***REMOVED*** —— 主门禁：每次 push/PR 都跑测试与语法自检 ——
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+      - name: 装 Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/ ***REMOVED*** 供 publish job 复用 NPM_TOKEN
+      - name: 安装依赖（零第三方依赖 → npm install）
+        run: npm install
+      - name: 跑测试（node:test）
+        run: npm test
+      - name: 语法自检（零编译）
+        run: npm run build
+
+  ***REMOVED*** —— 发布：仅 tag push 时执行，依赖 test 通过 ——
+  publish:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write ***REMOVED*** --provenance 需要 OIDC id-token（npm provenance 签名）
+      contents: read
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+      - name: 装 Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+      - name: 安装依赖
+        run: npm install
+      - name: 发布到 npm（provenance + public）
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
