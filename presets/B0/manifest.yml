@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "0",
+  "id": "B0",
+  "name": "role-中性基座（generic base）",
+  "weight": "M",
+  "source": "bundled",
+  "description": "跨角色最小基座：角色锚点（待定）+ 红线 + 术语三行 + C13 标准提示词族 + 渐进披露 + templates 模板元层。init 无 --role 时产出。",
+  "modules": [
+    {
+      "id": "b0.anchor",
+      "path": "CLAUDE.md",
+      "scope": "base",
+      "weight": "resident",
+      "sensitivity": "normal",
+      "platform": "full",
+      "dest": ".claude/CLAUDE.md",
+      "template": true
+    },
+    {
+      "id": "b0.agents",
+      "path": "AGENTS.md",
+      "scope": "base",
+      "weight": "resident",
+      "sensitivity": "normal",
+      "platform": "inline",
+      "dest": "AGENTS.md",
+      "template": true
+    },
+    {
+      "id": "b0.tpl.first-principles",
+      "path": "templates/理念-第一性原理.md",
+      "scope": "base",
+      "weight": "on-demand",
+      "sensitivity": "normal",
+      "platform": "full",
+      "dest": ".claude/templates/理念-第一性原理.md"
+    },
+    {
+      "id": "b0.tpl.adversarial-review",
+      "path": "templates/方法-对抗审核模板.md",
+      "scope": "base",
+      "weight": "on-demand",
+      "sensitivity": "normal",
+      "platform": "full",
+      "dest": ".claude/templates/方法-对抗审核模板.md"
+    }
+  ]
+}

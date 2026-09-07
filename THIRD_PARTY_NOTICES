@@ -1,0 +1,25 @@
+***REMOVED*** THIRD PARTY NOTICES
+
+harness-kit 随包内容合规声明。策略对齐 spec 04 §二（三来源 MIT/Apache）与 A2/A4。
+
+***REMOVED******REMOVED*** 当前状态（v0.1 skeleton）
+
+- **零第三方 runtime 依赖**（package.json `dependencies: {}`），无源码级引入。
+- presets 均为第一方 bundled（`source-type: bundled`），暂未 vendored 任何外部技能/模板。
+- 暂无 git***REMOVED***sha marketplace 模块（A6 opt-in，v1+ 才启用拉取）。
+
+***REMOVED******REMOVED*** 何时补充本文件
+
+下列任一发生时，必须在本文件登记「来源 · 作者 · 许可证 · 版本/sha · 引入位置」：
+
+1. `presets/vendor/` 出现随包 vendored 外部技能快照（如 mattpocock/skills，A2）。
+2. 任一 preset 模块 `source-type: git`（marketplace 拉取落盘）。
+3. README/模板引用外部 MIT（DeepSeek）/Apache（Codex）方法论片段超过合理引用。
+
+***REMOVED******REMOVED*** 合规铁律
+
+- 被吸收内容若含 ctf/haiting 等公司业务私有细节 → 一律剔除或抽象化（"某电商中台"口径）。
+- 外部来源只做模板引用/蒸馏，不复制（"模板引用不复制"）；引用处保留出处链接。
+- 许可证冲突未裁决前不并入。
+
+_（占位范本，待首批 vendored 内容落盘时逐条填写。）_

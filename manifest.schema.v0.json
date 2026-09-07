@@ -1,0 +1,110 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema***REMOVED***",
+  "$id": "https://xingtu.dev/schemas/harness-kit/manifest.schema.v0.json",
+  "title": "harness-kit preset manifest (v0)",
+  "description": "preset = 角色/场景规约包（目录 + manifest）。manifest 声明模块清单、来源、敏感分级、能力型平台渲染差异。唯一规约模型 = preset 目录 + manifest（05 §八 A2/A4/A5/A6/A7）。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "name", "modules"],
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "0",
+      "description": "manifest schema 版本，自举锚点。"
+    },
+    "id": {
+      "type": "string",
+      "description": "preset 唯一 id（目录名），如 B0 / presale。"
+    },
+    "name": {
+      "type": "string",
+      "description": "人类可读 preset 名。"
+    },
+    "weight": {
+      "type": "string",
+      "enum": ["S", "M", "L", "XL"],
+      "default": "S",
+      "description": "常驻重量档位：S<2KB / M~10KB / L~30KB / XL~60KB（NF-1）。"
+    },
+    "source": {
+      "type": "string",
+      "enum": ["bundled", "git"],
+      "default": "bundled",
+      "description": "preset 交付方式。bundled=随 npm 分发（第一方，R2/A2）；git=第三方 marketplace 拉取（v1+，A6）。"
+    },
+    "description": {
+      "type": "string",
+      "description": "preset 一句话说明。"
+    },
+    "depends_on": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "依赖的 preset id（角色 preset 依赖 B0）。"
+    },
+    "modules": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "***REMOVED***/definitions/module" }
+    }
+  },
+  "definitions": {
+    "module": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "path", "scope", "dest"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "模块 id（<preset>.<name>）。"
+        },
+        "path": {
+          "type": "string",
+          "description": "源文件路径，相对本 preset 目录（复制/模板替换的输入）。"
+        },
+        "source-type": {
+          "type": "string",
+          "enum": ["bundled", "git"],
+          "default": "bundled",
+          "description": "模块来源：bundled=随 preset 内；git=外部 git 模块（A6，vendored/占位后置）。"
+        },
+        "scope": {
+          "type": "string",
+          "enum": ["base", "role"],
+          "description": "base=B0 基座件；role=角色专属件。同 dest 冲突时 role 覆盖 base。user 为独立字段，kit 永不覆写（A7）。"
+        },
+        "weight": {
+          "type": "string",
+          "enum": ["resident", "on-demand"],
+          "default": "resident",
+          "description": "常驻或按需加载（渐进披露 / size -g 常驻 rules 口径）。"
+        },
+        "sensitivity": {
+          "type": "string",
+          "enum": ["normal", "hook", "script", "settings", "permissions", "mcp"],
+          "default": "normal",
+          "description": "内容敏感分级。normal(.md/.rules 等) 可直写；hook/script/settings/permissions/mcp 为高敏，引入走 --trust 人审门（A5）。"
+        },
+        "platform": {
+          "type": "string",
+          "enum": ["full", "inline", "symlink", "omit", "paste-export"],
+          "default": "full",
+          "description": "能力型渲染。full=claude 全集 / inline=规则内联降级 / symlink=跨平台别名 / omit=该平台跳过 / paste-export=粘贴导出版（03 §六）。"
+        },
+        "depends_on": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "模块级依赖（薄层，预留）。"
+        },
+        "dest": {
+          "type": "string",
+          "description": "目标工作区相对路径（受管区白名单）。运行期校验：仅相对、禁 ../、禁绝对/盘符、symlink 逃逸检查（A7）。"
+        },
+        "template": {
+          "type": "boolean",
+          "default": false,
+          "description": "true=写前做 {{var}} 模板替换（role/workspace/platform）。"
+        }
+      }
+    }
+  }
+}

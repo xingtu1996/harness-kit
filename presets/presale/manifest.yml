@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "0",
+  "id": "presale",
+  "name": "Presale / FDE（售前）",
+  "weight": "M",
+  "source": "bundled",
+  "description": "售前角色 preset：阶段声明 + No-Spec-No-Code 门禁 + Discovery spec 纪律 + ready-for-agent 交接（A9 立品实证件 = No-Spec-No-Code 门禁）。",
+  "depends_on": ["B0"],
+  "modules": [
+    {
+      "id": "presale.anchor",
+      "path": "CLAUDE.md",
+      "scope": "role",
+      "weight": "resident",
+      "sensitivity": "normal",
+      "platform": "full",
+      "dest": ".claude/CLAUDE.md",
+      "template": true
+    },
+    {
+      "id": "presale.nsnc",
+      "path": "rules/no-spec-no-code.md",
+      "scope": "role",
+      "weight": "resident",
+      "sensitivity": "normal",
+      "platform": "full",
+      "dest": ".claude/rules/no-spec-no-code.md"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "name": "harness-kit",
+  "version": "0.1.0",
+  "description": "可回滚的角色化 Agent Harness 工作区生成器：init / patch / doctor。给强 harness，模型可以便宜。",
+  "type": "module",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "harness-kit": "./bin/harness-kit.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "presets",
+    "manifest.schema.v0.json",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES",
+    "SELF.md"
+  ],
+  "scripts": {
+    "build": "node --check bin/harness-kit.js && node --check src/cli.js && for f in src/*.js; do node --check \"$f\" >/dev/null || exit 1; done",
+    "test": "node --test"
+  },
+  "keywords": [
+    "harness",
+    "claude",
+    "agent",
+    "preset",
+    "scaffold",
+    "claude-code"
+  ],
+  "dependencies": {},
+  "devDependencies": {}
+}
