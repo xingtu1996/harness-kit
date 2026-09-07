@@ -1,0 +1,12 @@
+{
+  "id": "content",
+  "workspace": "ws",
+  "entries": {
+    ".claude/CLAUDE.md": "82432e94bd613efec32f84b5d6b8b12fc31f17282a4262533bb73bc2a4bdb2d8",
+    ".claude/rules/content-gate.md": "ea8ad33b043d1bac72adb88636959077aa2cbda2f09fefd703ee45235235e88e",
+    ".claude/templates/方法-对抗审核模板.md": "edbb8ba04f8a69bf1ee872f699469de41b25ef790d19ba0dc0e3b2b3b7c2f106",
+    ".claude/templates/理念-第一性原理.md": "1a0249c49544fec7481b063b745af3385647a94d47b2f18598a28b3d60eab23d",
+    ".gitignore": "6c2b38f20df193fbe6a1e4840071860e1f3331656dc9895636eaa81dd5d0eebe",
+    "AGENTS.md": "49d9d75f0c92397e06d15ee506156ec146cbe63ff0e859bd3fec124f85423020"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "id": "presale",
+  "workspace": "ws",
+  "entries": {
+    ".claude/CLAUDE.md": "b6cdee60510f94c04e91a2a8090adc13edeb033c0567dd6847b3886ba9773adf",
+    ".claude/rules/no-spec-no-code.md": "187dcf7dfe98e2461b1d867a8c8ee981f1c0186ff5fe2e74168560b3f6e0ca0e",
+    ".claude/templates/方法-对抗审核模板.md": "edbb8ba04f8a69bf1ee872f699469de41b25ef790d19ba0dc0e3b2b3b7c2f106",
+    ".claude/templates/理念-第一性原理.md": "1a0249c49544fec7481b063b745af3385647a94d47b2f18598a28b3d60eab23d",
+    ".gitignore": "6c2b38f20df193fbe6a1e4840071860e1f3331656dc9895636eaa81dd5d0eebe",
+    "AGENTS.md": "49d9d75f0c92397e06d15ee506156ec146cbe63ff0e859bd3fec124f85423020"
+  }
+}

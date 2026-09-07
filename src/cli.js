@@ -2,19 +2,21 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { init } from './init.js';
 import { patch } from './patch.js';
+import { upgrade } from './upgrade.js';
 import { doctor } from './doctor.js';
 import { inspectSize } from './size.js';
 import { REPO_ROOT } from './util.js';
 
 const VERSION = JSON.parse(readFileSync(path.join(REPO_ROOT, 'package.json'), 'utf8')).version;
 
-export const HELP = `harness-kit v${VERSION} —— 可回滚的角色化 Agent Harness 工作区生成器（init/patch/doctor）
+export const HELP = `harness-kit v${VERSION} —— 可回滚的角色化 Agent Harness 工作区生成器（init/patch/upgrade/doctor/size/agent-prompt）
 
 用法: harness-kit <op> [options]
 
 操作:
   init    生成受管 harness 骨架。默认可写；无 --role → role-中性 B0 基座（A1）。
   patch   纯 lock 驱动：补缺失 + 报告漂移。默认 dry-run；--apply 才补缺（A8/A3）。
+  upgrade 纯 lock 驱动升级（M3）：lock.presetSha ≠ 当前 bundled sha → 列新增/变更清单。默认 dry-run；--apply 渲染写盘+刷新 lock。无 lock 需先 init。
   doctor  现状体检：受管/漂移/体积三值，只读（--json 供 agent 分析）。
   size    size 三值：锚点 CLAUDE.md / 常驻 rules / 产物 KB + 档位预算通过性。
   agent-prompt  生成"复制给任意 Agent"的一段话（无副作用；贴给豆包/Qoder/ChatGPT/Claude/WorkBuddy/TraeWork 即让它自驱动 kit）。
@@ -25,8 +27,9 @@ export const HELP = `harness-kit v${VERSION} —— 可回滚的角色化 Agent 
   --cwd <dir>      目标工作区目录（默认 process.cwd()）
   --role <id>      preset 角色：B0 / presale / code-delivery / content（init/patch）
   --platform <id>  claude（默认自动探测）
+  --stage <转换>   跨阶段转换占位（upgrade，如 presale→coding；convert 未实现，v0.1 仅指引）
   --dry-run        预览，不落盘
-  --apply          落盘写（patch 补缺需此标志；init 默认可写）
+  --apply          落盘写（patch 补缺 / upgrade 应用需此标志；init 默认可写）
   --trust          高敏模块（hook/script/settings/permissions/mcp）人审放行（A5）
   --purge          清空 .harness-kit/snapshots 快照
   --allow-extension 预留：第三方 marketplace opt-in（A6，v0.1 未启用）
@@ -36,6 +39,9 @@ export const HELP = `harness-kit v${VERSION} —— 可回滚的角色化 Agent 
   harness-kit init --role presale --json
   harness-kit patch --json
   harness-kit patch --apply --json
+  harness-kit upgrade --json
+  harness-kit upgrade --apply --json
+  harness-kit upgrade --stage presale→coding --json
   harness-kit doctor --json
   harness-kit size --json
   harness-kit agent-prompt --role presale
@@ -56,6 +62,7 @@ export function parseArgs(argv) {
     else if (a === '--cwd') opts.cwd = argv[++i];
     else if (a === '--role') opts.role = argv[++i];
     else if (a === '--platform') opts.platform = argv[++i];
+    else if (a === '--stage') opts.stage = argv[++i];
     else if (a === '--allow-extension') opts.allowExtension = true;
     else if (a.startsWith('-')) throw new Error(`未知选项: ${a}`);
     else positional.push(a);
@@ -85,6 +92,24 @@ function humanPatch(r) {
   for (const a of r.applied || []) lines.push(`  + applied ${a.path}`);
   for (const s of r.skipped || []) lines.push(`  ⚠ 高敏跳过补缺 ${s.path} → --trust`);
   for (const g of r.guidance || []) lines.push(`  指引: ${g}`);
+  return lines.join('\n');
+}
+
+function humanUpgrade(r) {
+  if (r.ok === false) return `[upgrade] ${r.message}`;
+  if (r.status === 'stage-placeholder') return `[upgrade --stage] ${(r.guidance || []).join(' ')}`;
+  if (r.status === 'up-to-date') return `upgrade: preset=${r.preset.id} · 已最新（sha ${(r.preset.lockSha || '').slice(0, 12)}…）`;
+  const lines = [
+    `upgrade: preset=${r.preset.id} · ${r.status} · lock@${(r.preset.lockSha || '').slice(0, 12)}… ≠ 当前@${(r.preset.currentSha || '').slice(0, 12)}…`,
+    `  changes: ${r.changes.length}（新增 ${r.summary.added} / 变更 ${r.summary.changed} / 移出计划 ${r.summary.orphan}，移出不删盘上文件）`,
+  ];
+  for (const c of r.changes) lines.push(`  ${c.state === 'new' ? '+' : '~'} ${c.path} (${c.state})`);
+  for (const o of r.orphans) lines.push(`  - ${o} (已不在当前 preset，保留盘上文件)`);
+  for (const a of r.applied) lines.push(`  + applied ${a.path}`);
+  for (const s of r.skipped) lines.push(`  ⚠ 高敏跳过 ${s.path} → --trust`);
+  for (const b of r.blocked) lines.push(`  ⛔ 阻断 ${b.path} (${b.reason}) → 先处置`);
+  for (const g of r.guidance) lines.push(`  指引: ${g}`);
+  if (r.status === 'needs-apply' && !r.applied.length) lines.push('  → `--apply` 应用变更并刷新 lock');
   return lines.join('\n');
 }
 
@@ -138,6 +163,10 @@ export async function main(argv) {
         const r = await patch({ cwd: opts.cwd, apply: opts.apply === true && !opts.dryRun, dryRun: !!opts.dryRun, trust: opts.trust, purge: opts.purge });
         return out(r, r.ok === false ? 1 : 0);
       }
+      case 'upgrade': {
+        const r = await upgrade({ cwd: opts.cwd, apply: opts.apply === true && !opts.dryRun, dryRun: !!opts.dryRun, trust: opts.trust, purge: opts.purge, stage: opts.stage });
+        return out(r, r.ok === false ? 1 : 0);
+      }
       case 'doctor': {
         const r = doctor({ cwd: opts.cwd });
         return out(r, 0);
@@ -169,6 +198,7 @@ function renderHuman(r, opts) {
   switch (r.op) {
     case 'init': return humanInit(r);
     case 'patch': return humanPatch(r);
+    case 'upgrade': return humanUpgrade(r);
     case 'doctor': return humanDoctor(r);
     case 'size': return humanSize(r);
     case 'agent-prompt': return r.prompt;

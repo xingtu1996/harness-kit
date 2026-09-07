@@ -1,0 +1,12 @@
+{
+  "id": "code-delivery",
+  "workspace": "ws",
+  "entries": {
+    ".claude/CLAUDE.md": "a23a52481f562ca7db174a840024dea35a7b3451b72ff77135b85285acc6a683",
+    ".claude/rules/coding-gate.md": "220adb1ad36e7c8bd6f853188ffb0229717c98294da3a01557c7a3d8cdaa94b0",
+    ".claude/templates/方法-对抗审核模板.md": "edbb8ba04f8a69bf1ee872f699469de41b25ef790d19ba0dc0e3b2b3b7c2f106",
+    ".claude/templates/理念-第一性原理.md": "1a0249c49544fec7481b063b745af3385647a94d47b2f18598a28b3d60eab23d",
+    ".gitignore": "6c2b38f20df193fbe6a1e4840071860e1f3331656dc9895636eaa81dd5d0eebe",
+    "AGENTS.md": "49d9d75f0c92397e06d15ee506156ec146cbe63ff0e859bd3fec124f85423020"
+  }
+}
