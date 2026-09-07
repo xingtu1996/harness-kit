@@ -93,9 +93,11 @@ harness-kit 生成物 = 这份接口的**角色化简化版**（B0 基座：`.cl
 mkdir my-workspace && cd my-workspace
 harness-kit init --json
 
-***REMOVED*** 2) 角色化（示例：售前 / FDE，含 No-Spec-No-Code 门禁）
-harness-kit init --role presale --json
-***REMOVED*** 或对既有受管空间补角色（后续版本开放）
+***REMOVED*** 2) 角色化（已内置 presale / code-delivery / content 三角色，各带签名门禁件）
+harness-kit init --role presale --json        ***REMOVED*** 售前：No-Spec-No-Code 门禁
+harness-kit init --role code-delivery --json  ***REMOVED*** 开发交付：coding-gate（spec 先行/TDD/三条件）
+harness-kit init --role content --json        ***REMOVED*** 内容运营：content-gate + 知识接入点
+***REMOVED*** 已有受管空间：preset 有新版走 upgrade（六维 diff + 快照回滚）
 
 ***REMOVED*** 3) 体检：受管 / 漂移 / 体积三值（agent 可消费）
 harness-kit doctor --json
@@ -140,7 +142,8 @@ harness-kit patch --apply --json
 
 ***REMOVED******REMOVED******REMOVED*** CLI 契约
 
-- 全命令 `--json`；`--dry-run` 预览（patch 默认 dry-run）；`--apply` 落盘；`--trust` 高敏放行（A5）；`--cwd <dir>`。
+- 全命令 `--json`；`--dry-run` 预览（patch 默认 dry-run）；`--apply` 落盘；`--trust` 高敏放行（A5）；`--cwd <dir>`；`--role <presale|code-delivery|content>`；`--stage`（upgrade 跨阶段转换占位）。
+- 命令：`init`（默认可写）· `patch`（纯 lock 补缺+漂移）· `upgrade`（纯 lock 升级：preset 新版列新增/变更，--apply 写盘+刷新 lock）· `doctor`（受管/漂移/体积体检）· `size`（三值+预算）· `agent-prompt`（生成贴给 Agent 的一句话）。
 - `.harness-kit/`（lock + 快照）自动进目标 `.gitignore`，自豁免体积审计。
 
 ***REMOVED******REMOVED******REMOVED*** 术语三行
