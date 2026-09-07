@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "0",
+  "id": "code-delivery",
+  "name": "Code Delivery / IT（开发交付）",
+  "weight": "M",
+  "source": "bundled",
+  "description": "开发交付角色 preset：Spec 先行 + TDD 纪律 + 质量/安全三条件 + 体积门禁提示 + 统一提交纪律（A9 立品实证件 = coding gate）。通用化，技术栈用 {{stack}} 变量。",
+  "depends_on": ["B0"],
+  "modules": [
+    {
+      "id": "code-delivery.anchor",
+      "path": "CLAUDE.md",
+      "scope": "role",
+      "weight": "resident",
+      "sensitivity": "normal",
+      "platform": "full",
+      "dest": ".claude/CLAUDE.md",
+      "template": true
+    },
+    {
+      "id": "code-delivery.gate",
+      "path": "rules/coding-gate.md",
+      "scope": "role",
+      "weight": "resident",
+      "sensitivity": "normal",
+      "platform": "full",
+      "dest": ".claude/rules/coding-gate.md"
+    }
+  ]
+}

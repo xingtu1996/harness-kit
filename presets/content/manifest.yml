@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "0",
+  "id": "content",
+  "name": "Content / Ops（内容运营）",
+  "weight": "M",
+  "source": "bundled",
+  "description": "内容运营角色 preset：选题→成稿→发布→复盘工作流 + 内容门禁（先查证/去 AI 味/脱敏/标源）+ 素材库知识接入点占位（场景 A）（A9 立品实证件 = content gate）。",
+  "depends_on": ["B0"],
+  "modules": [
+    {
+      "id": "content.anchor",
+      "path": "CLAUDE.md",
+      "scope": "role",
+      "weight": "resident",
+      "sensitivity": "normal",
+      "platform": "full",
+      "dest": ".claude/CLAUDE.md",
+      "template": true
+    },
+    {
+      "id": "content.gate",
+      "path": "rules/content-gate.md",
+      "scope": "role",
+      "weight": "resident",
+      "sensitivity": "normal",
+      "platform": "full",
+      "dest": ".claude/rules/content-gate.md"
+    }
+  ]
+}
