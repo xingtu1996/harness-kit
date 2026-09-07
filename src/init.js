@@ -7,6 +7,7 @@ import { validateDest, ensureDir, sha256Text, isFile } from './util.js';
 import { writeLock, readLock, lockAbs } from './lock.js';
 import { snapshotBeforeWrite } from './snapshot.js';
 import { measureSize } from './size.js';
+import { ensureDefaultConfig } from './config.js';
 
 /**
  * init = 唯一默认可写 op（A1）；写前快照 + 落 lock（A7）+ 高敏 --trust 门（A5）。
@@ -124,6 +125,9 @@ export async function init(opts) {
 
   // .harness-kit/ 自动进目标 .gitignore（A10）
   appendGitignore(targetDir);
+
+  // FR-16：写项目分层配置默认骨架（若 .harness-kit 存在且无 config.json；幂等，进 .gitignore 不影响体积审计）
+  ensureDefaultConfig(targetDir);
 
   const anyChanged = written.some((w) => w.changed) || lockChanged || snap.files.length > 0;
   return {

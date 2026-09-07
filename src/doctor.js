@@ -2,6 +2,7 @@ import path from 'node:path';
 import { readLock, measureLockedFiles, classifyFiles } from './lock.js';
 import { resolvePresets, planModules, treeSha } from './preset.js';
 import { measureSize } from './size.js';
+import { loadConfig } from './config.js';
 
 /**
  * doctor --json（§〇 支柱3 / A3 配套）：受管 / 漂移 / 体积三值，agent 可跑 `kit doctor --json` 自主分析建议。
@@ -34,10 +35,21 @@ export function doctor(opts) {
   }
   const needsUpgrade = presetErr ? true : curSha !== lock.preset.sha;
 
+  const cfg = loadConfig(targetDir);
+  const config = cfg.config;
+
   const suggestions = [];
   if (needsUpgrade) suggestions.push('preset 有更新（lock.sha ≠ 当前包 sha）→ 走 upgrade（M3+），勿手工混写。');
   if (cls.missing.length) suggestions.push(`缺失 ${cls.missing.length} 文件 → kit patch --apply 补缺。`);
   if (cls.drift.length) suggestions.push(`漂移 ${cls.drift.length} 文件（手改）→ kit v0.1 尊重不覆盖；内容升级走 upgrade。`);
+  if (config.defaultRole && lock.preset.id === 'B0') {
+    suggestions.push(`config.defaultRole=${config.defaultRole} → 现为 B0 中性基座，可用 kit init --role ${config.defaultRole} 角色化。`);
+  } else if (config.defaultRole && config.defaultRole !== lock.preset.id && lock.preset.id !== 'B0') {
+    suggestions.push(`config.defaultRole=${config.defaultRole} ≠ 当前角色 ${lock.preset.id} → 如需切角色走 kit convert --role ${config.defaultRole}。`);
+  }
+  if (config.features?.reflow) {
+    suggestions.push('config.features.reflow=true → reflow 件已启用（会话→memory 自动回流；实现占位，M3+ 后置）。');
+  }
   if (size.pass === false) {
     suggestions.push(`体积超标：CLAUDE.md ${size.claudeMd.lines} 行(≤300) / 产物 ${size.productsKb}KB(≤${size.budgetKb}KB) → 减负。`);
   } else {
@@ -56,6 +68,8 @@ export function doctor(opts) {
     },
     size,
     preset: { id: lock.preset.id, lockSha: lock.preset.sha, currentSha: curSha, needsUpgrade, presetError: presetErr },
+    config,
+    configSources: { user: cfg.present.user, project: cfg.present.project },
     suggestions,
   };
 }
