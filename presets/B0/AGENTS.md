@@ -1,4 +1,4 @@
-***REMOVED*** AGENTS.md —— 跨平台薄入口（{{platform}}）
+# AGENTS.md —— 跨平台薄入口（{{platform}}）
 
 > 由 harness-kit v{{kitVersion}} 生成。本文件是 AGENTS 类平台（codex/opencode/pi 等）的通用入口，只做路由，不复制正文。
 

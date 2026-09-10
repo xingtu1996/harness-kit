@@ -1,10 +1,10 @@
-***REMOVED*** deps / build
+# deps / build
 node_modules/
 dist/
 
-***REMOVED*** os / editor
+# os / editor
 .DS_Store
 *.log
 
-***REMOVED*** harness-kit 内部簿记（出现在被 init 的目标工作区时同样忽略）
+# harness-kit 内部簿记（出现在被 init 的目标工作区时同样忽略）
 .harness-kit/

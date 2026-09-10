@@ -49,7 +49,7 @@ test('upgrade：lock sha ≠ 当前 preset sha → 列新增/变更 + needs-appl
     runCli(['init', '--json'], { cwd: ws, env });
     // 篡改 B0 源文件 → bundled preset sha 变化（模拟新版 preset 发布）
     const anchorSrc = path.join(presets, 'B0', 'CLAUDE.md');
-    fs.appendFileSync(anchorSrc, '\n***REMOVED*** v2 upgrade 测试行\n');
+    fs.appendFileSync(anchorSrc, '\n# v2 upgrade 测试行\n');
 
     const u = JSON.parse(runCli(['upgrade', '--json'], { cwd: ws, env }).stdout);
     assert.equal(u.op, 'upgrade');
@@ -72,7 +72,7 @@ test('upgrade --apply：渲染写盘 + 刷新 lock 至最新 sha；二次 upgrad
   const { root, presets, ws, env } = makeWsWithPresets();
   try {
     runCli(['init', '--json'], { cwd: ws, env });
-    fs.appendFileSync(path.join(presets, 'B0', 'CLAUDE.md'), '\n***REMOVED*** v2 upgrade 测试行\n');
+    fs.appendFileSync(path.join(presets, 'B0', 'CLAUDE.md'), '\n# v2 upgrade 测试行\n');
 
     const a = JSON.parse(runCli(['upgrade', '--apply', '--json'], { cwd: ws, env }).stdout);
     assert.equal(a.ok, true);

@@ -26,8 +26,8 @@ function makeProbePreset() {
       2,
     ),
   );
-  fs.writeFileSync(path.join(probeDir, 'note.md'), '***REMOVED*** note\nnormal content\n');
-  fs.writeFileSync(path.join(probeDir, 'hook.js'), '***REMOVED***!/usr/bin/env node\nconsole.log("hook")\n');
+  fs.writeFileSync(path.join(probeDir, 'note.md'), '# note\nnormal content\n');
+  fs.writeFileSync(path.join(probeDir, 'hook.js'), '#!/usr/bin/env node\nconsole.log("hook")\n');
   return root;
 }
 
@@ -47,7 +47,7 @@ test('dest 越界（.. / 绝对路径）被拒，不外泄到受管根之外（A
       ],
     }),
   );
-  fs.writeFileSync(path.join(evilDir, 'x.md'), '***REMOVED*** x\n');
+  fs.writeFileSync(path.join(evilDir, 'x.md'), '# x\n');
   try {
     const r = runCli(['init', '--role', 'evil', '--json'], { cwd: dir, env: { HARNESS_KIT_PRESETS_DIR: presets } });
     assert.notEqual(r.code, 0, 'dest 越界应报错退出');

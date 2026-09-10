@@ -1,5 +1,5 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema***REMOVED***",
+  "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://xingtu.dev/schemas/harness-kit/manifest.schema.v0.json",
   "title": "harness-kit preset manifest (v0)",
   "description": "preset = 角色/场景规约包（目录 + manifest）。manifest 声明模块清单、来源、敏感分级、能力型平台渲染差异。唯一规约模型 = preset 目录 + manifest（05 §八 A2/A4/A5/A6/A7）。",
@@ -44,7 +44,7 @@
     "modules": {
       "type": "array",
       "minItems": 1,
-      "items": { "$ref": "***REMOVED***/definitions/module" }
+      "items": { "$ref": "#/definitions/module" }
     }
   },
   "definitions": {

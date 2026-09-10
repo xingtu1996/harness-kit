@@ -63,7 +63,7 @@ test('convert：手改漂移（锚点被手改）→ 原子阻断，不写盘不
   try {
     runCli(['init', '--role', 'presale', '--json'], { cwd: ws });
     const anchor = path.join(ws, '.claude', 'CLAUDE.md');
-    fs.appendFileSync(anchor, '\n***REMOVED*** 手改测试\n');
+    fs.appendFileSync(anchor, '\n# 手改测试\n');
 
     const c = JSON.parse(runCli(['convert', '--role', 'code-delivery', '--apply', '--json'], { cwd: ws }).stdout);
     assert.equal(c.ok, true);
@@ -71,7 +71,7 @@ test('convert：手改漂移（锚点被手改）→ 原子阻断，不写盘不
     assert.ok(c.blocked.some((b) => b.path === '.claude/CLAUDE.md' && b.reason === 'drift'), '漂移锚点应被阻断');
     assert.equal(readLock(ws).preset.id, 'presale', '阻断时 lock.preset.id 不得变');
     assert.equal(fs.existsSync(path.join(ws, '.claude', 'rules', 'coding-gate.md')), false, '阻断时不得写新门禁件');
-    assert.ok(fs.readFileSync(anchor, 'utf8').includes('***REMOVED*** 手改测试'), '手改内容不得被覆盖');
+    assert.ok(fs.readFileSync(anchor, 'utf8').includes('# 手改测试'), '手改内容不得被覆盖');
   } finally {
     rmTmp(ws);
   }

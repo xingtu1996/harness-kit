@@ -1,9 +1,9 @@
-***REMOVED*** TESTING — harness-kit v0.1 测试验证办法与报告
+# TESTING — harness-kit v0.1 测试验证办法与报告
 
 > 运行：`npm test`（node:test，零框架）｜ 语法自检：`npm run build`（node --check）｜ 合规：零第三方依赖
 > 需求映射 SSoT：`specs/harness-kit--role-harness-initializer--20260907/requirements.md`（FR）+ `validator.md`
 
-***REMOVED******REMOVED*** 测试验证办法（FR → 用例）
+## 测试验证办法（FR → 用例）
 
 | FR/门禁 | 测试文件 | 用例 | 通过条件 |
 |--------|---------|------|---------|
@@ -20,9 +20,9 @@
 | FR-16 分层配置 | config.spec.js | doctor --json 含 config / 项目覆盖 defaultRole/features / 无 config 内置默认 / null 惰性 | 四级合并只读注入，不改写行为 |
 | --json 机器可读 | init/patch/size | init/doctor/patch/size `--json` | JSON.parse 通过 |
 
-***REMOVED******REMOVED*** 报告
+## 报告
 
-***REMOVED******REMOVED******REMOVED*** 2026-09-07 · 首跑 10/10 PASS（本地 git init 后基线）
+### 2026-09-07 · 首跑 10/10 PASS（本地 git init 后基线）
 `npm test` → tests 10 · pass 10 · fail 0 · duration 422ms
 - ✔ 空目录 init 无 --role → B0 + lock；--json 可解析；二次幂等
 - ✔ doctor/size --json 三值可解析
@@ -41,11 +41,11 @@
 - ✔ 分层配置（FR-16）：doctor --json 含 config 合并字段；项目 config 覆盖 defaultRole/features（reflow 占位建议）；无 config 回退内置默认；null 惰性不覆盖用户级
 → **37/37 PASS**
 
-***REMOVED******REMOVED*** 未覆盖（M3+ 增量时补）
+## 未覆盖（M3+ 增量时补）
 
-- `convert` 完整语义（haiting 样例进阶：spec 交接编排/回滚路径）、`apply`(团队 preset FR-14)、`--allow-extension`(A6)、分层配置完整开关（defaultRole/budget/features 真驱动 init/doctor 行为，非只读）
+- `convert` 完整语义（客户样例进阶：spec 交接编排/回滚路径）、`apply`(团队 preset FR-14)、`--allow-extension`(A6)、分层配置完整开关（defaultRole/budget/features 真驱动 init/doctor 行为，非只读）
 - hook 真实落盘 chmod（A6）；Windows 路径
 
-***REMOVED******REMOVED*** CI 意图
+## CI 意图
 
 `npm test` + `npm run build` 为发布门禁前置；`.github/workflows/ci.yml` 已落（push/PR 跑 test+build；tag push 触发 `npm publish --provenance --access public`，需 secrets.NPM_TOKEN）。

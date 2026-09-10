@@ -13,7 +13,7 @@ test('patch 纯 lock 驱动：报 missing/drift，--apply 补缺但不覆盖手�
 
     // 制造 missing + drift
     fs.rmSync(tpl);
-    fs.appendFileSync(anchor, '\n***REMOVED*** 本地手改测试\n');
+    fs.appendFileSync(anchor, '\n# 本地手改测试\n');
 
     const p = JSON.parse(runCli(['patch', '--json'], { cwd: dir }).stdout);
     assert.equal(p.op, 'patch');
@@ -32,7 +32,7 @@ test('patch 纯 lock 驱动：报 missing/drift，--apply 补缺但不覆盖手�
     assert.ok(a.applied.some((x) => x.path.endsWith('理念-第一性原理.md')), '缺失模板应被补');
     assert.equal(fs.existsSync(tpl), true);
     const anchorText = fs.readFileSync(anchor, 'utf8');
-    assert.ok(anchorText.includes('***REMOVED*** 本地手改测试'), '手改内容不得被覆盖（v0.1 尊重手改）');
+    assert.ok(anchorText.includes('# 本地手改测试'), '手改内容不得被覆盖（v0.1 尊重手改）');
 
     // 漂移仍在（未覆盖手改 → 仍报 drift）
     const p2 = JSON.parse(runCli(['patch', '--json'], { cwd: dir }).stdout);

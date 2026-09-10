@@ -151,7 +151,7 @@ function appendGitignore(targetDir) {
   const p = path.join(targetDir, '.gitignore');
   const LINE = '.harness-kit/';
   if (!isFile(p)) {
-    fs.writeFileSync(p, '***REMOVED*** harness-kit（A10 自豁免）\n' + LINE + '\n', 'utf8');
+    fs.writeFileSync(p, '# harness-kit（A10 自豁免）\n' + LINE + '\n', 'utf8');
     return;
   }
   const cur = fs.readFileSync(p, 'utf8');
