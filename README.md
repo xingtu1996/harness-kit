@@ -234,3 +234,14 @@ npm test        # node:test 冒烟（init/patch/upgrade/doctor/size/show/convert
 ```
 
 目录：`bin/`（薄入口）· `src/`（cli/detect/init/patch/upgrade/doctor/size/show/convert/config/render/lock/manifest/snapshot）· `presets/`（B0 + presale + code-delivery + content）· `manifest.schema.v0.json`（schema）· `test/`（含 fixtures/golden.* 快照）· `.github/workflows/ci.yml`（门禁）。
+
+---
+
+## 👤 关于行途
+
+一线 builder，仍在写代码。专注 AI 工具链与工程化落地，分享可抄作业的实战经验。
+
+- 𝕏 X：[@xingtu1996](https://x.com/xingtu1996)（AI工程化实战，build in public）
+- GitHub：[github.com/xingtu1996](https://github.com/xingtu1996)
+- 🌐 个人站：[xingtu1996.pages.dev](https://xingtu1996.pages.dev)
+- 📱 公众号：「行途技术手记」（深度长文 + 可抄作业的实战经验）
