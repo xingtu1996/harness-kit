@@ -211,7 +211,7 @@ harness-kit = 散仓资产的**角色化编排生成器**：`xingtu-harness` 是
 
 **联系（企业定制 / 陪跑 / 内训）**
 
-- 🔔 公众号 **「行途技术手记」**：微信搜索关注，看 AI 工程化落地实战
+- 🔔 公众号 **「行途 XingTu」**：微信搜索关注，看 AI 工程化落地实战
 
 这个项目目前是我一个人在做，回复可能慢，但会回。
 
@@ -256,13 +256,13 @@ npm test        # node:test 冒烟（init/patch/upgrade/doctor/size/show/convert
 - 𝕏 X：[@xingtu1996](https://x.com/xingtu1996)（AI工程化实战，build in public）
 - GitHub：[github.com/xingtu1996](https://github.com/xingtu1996)
 - 🌐 个人站：[xingtu1996.pages.dev](https://xingtu1996.pages.dev)
-- 📱 公众号：「行途技术手记」（深度长文 + 可抄作业的实战经验）
+- 📱 公众号：「行途 XingTu」（深度长文 + 可抄作业的实战经验）
 
 ## 关于作者
 
 我是**行途**，一线技术人 + 仍在写代码。harness-kit 是我在多个 AI 编程项目里反复搭工作区后抽出来的生成器——把「角色化工作区」变成一条命令可回滚的操作。
 
-- 🔔 公众号 **「行途技术手记」**：微信搜索关注，看 AI 工程化落地实战
+- 🔔 公众号 **「行途 XingTu」**：微信搜索关注，看 AI 工程化落地实战
 - 🐙 GitHub：[@xingtu1996](https://github.com/xingtu1996)
 - 📦 仓库：[xingtu1996/harness-kit](https://github.com/xingtu1996/harness-kit)
 
