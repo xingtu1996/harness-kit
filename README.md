@@ -17,7 +17,7 @@
 |---|---|---|
 | `hooks/` | 生产级 Agent 钩子（安全拦截/会话提醒/交付检视） | xingtu-hooks |
 | `mcps/` | 生产级 MCP 服务集合 | xingtu-mcps |
-| `docs/brand-visual.md` | 行途品牌视觉规范（三原色/封面黑白交替/排版主题） | xingtu-design |
+| `docs/brand-visual.md` | 行途技术品牌视觉规范（三原色/封面黑白交替/排版主题） | xingtu-design |
 
 > 如无必要勿增实体：这三类资产本就是 harness 的组成部分，独立成仓只会稀释矩阵。原仓以只读归档保留，链接不失效。
 
@@ -66,7 +66,7 @@ harness-kit 生成物 = 这份接口的**角色化简化版**（B0 基座：`.cl
 | 重量 | 随阶段增减（售前最小 → 存量全量） | S 一张纸 ~ XL 60KB（常驻口径） |
 | 沉淀 | 踩坑 → 规则 → 反哺 | incidents / 每日日志 / auto-memory |
 
-> 真例对照：某零售供应链（重全量+蜂群）、行途（内容工厂+飞轮+看板）、某科技公司（售前阶段门）、dsh（插件化 preset）、某极简 preset（<1000 token）—— 入口/重量/机制不同，三件事与渐进披露思想相同。
+> 真例对照：某零售供应链（重全量+蜂群）、行途技术（内容工厂+飞轮+看板）、某科技公司（售前阶段门）、dsh（插件化 preset）、某极简 preset（<1000 token）—— 入口/重量/机制不同，三件事与渐进披露思想相同。
 
 ---
 
@@ -172,7 +172,7 @@ harness-kit patch --apply --json
 
 ---
 
-## ecosystem（与行途开源矩阵 10 仓互连）
+## ecosystem（与行途技术开源矩阵 10 仓互连）
 
 harness-kit = 散仓资产的**角色化编排生成器**：`xingtu-harness` 是"一键装配全部资产"，harness-kit 是"按角色 × 平台生成一套专业规约 workspace"——差异互补、同源内容，引用不复制。
 
@@ -211,7 +211,7 @@ harness-kit = 散仓资产的**角色化编排生成器**：`xingtu-harness` 是
 
 **联系（企业定制 / 陪跑 / 内训）**
 
-- 🔔 公众号 **「行途 XingTu」**：微信搜索关注，看 AI 工程化落地实战
+- 🔔 公众号 **「行途技术」**：微信搜索关注，看 AI 工程化落地实战
 
 这个项目目前是我一个人在做，回复可能慢，但会回。
 
@@ -249,20 +249,20 @@ npm test        # node:test 冒烟（init/patch/upgrade/doctor/size/show/convert
 
 ---
 
-## 👤 关于行途
+## 👤 关于行途技术
 
 一线 builder，仍在写代码。专注 AI 工具链与工程化落地，分享可抄作业的实战经验。
 
 - 𝕏 X：[@xingtu1996](https://x.com/xingtu1996)（AI工程化实战，build in public）
 - GitHub：[github.com/xingtu1996](https://github.com/xingtu1996)
 - 🌐 个人站：[xingtu1996.pages.dev](https://xingtu1996.pages.dev)
-- 📱 公众号：「行途 XingTu」（深度长文 + 可抄作业的实战经验）
+- 📱 公众号：「行途技术」（深度长文 + 可抄作业的实战经验）
 
 ## 关于作者
 
-我是**行途**，一线技术人 + 仍在写代码。harness-kit 是我在多个 AI 编程项目里反复搭工作区后抽出来的生成器——把「角色化工作区」变成一条命令可回滚的操作。
+我是**行途技术**，一线技术人 + 仍在写代码。harness-kit 是我在多个 AI 编程项目里反复搭工作区后抽出来的生成器——把「角色化工作区」变成一条命令可回滚的操作。
 
-- 🔔 公众号 **「行途 XingTu」**：微信搜索关注，看 AI 工程化落地实战
+- 🔔 公众号 **「行途技术」**：微信搜索关注，看 AI 工程化落地实战
 - 🐙 GitHub：[@xingtu1996](https://github.com/xingtu1996)
 - 📦 仓库：[xingtu1996/harness-kit](https://github.com/xingtu1996/harness-kit)
 
