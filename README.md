@@ -1,5 +1,7 @@
 # harness-kit
 
+**简体中文（主要语言）** | [English](README.en.md)
+
 > 给强 harness，模型可以便宜。 —— 可回滚的角色化 Agent Harness 工作区生成器。
 
 一句话三支柱：
