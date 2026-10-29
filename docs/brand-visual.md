@@ -1,4 +1,4 @@
-> **来源**：独立仓 xingtu-design 合并而来（2026-10-12，原仓仅 README+LICENSE 两文件）。
+> **来源**：本文件是品牌视觉主题仓 [xingtu-design](https://github.com/xingtu1996/xingtu-design) 的聚合镜像；视觉规范以独立仓为权威源，演进先落独立仓，再同步回本文件。
 
 # 行途技术 Design · 行途技术品牌视觉规范
 
