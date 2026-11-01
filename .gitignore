@@ -8,3 +8,5 @@ dist/
 
 # harness-kit 内部簿记（出现在被 init 的目标工作区时同样忽略）
 .harness-kit/
+
+*.bak*
